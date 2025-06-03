@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diagramas de Secuencia Smart Gap</title>
+    <script type="module">
+        import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+        mermaid.initialize({ startOnLoad: true });
+    </script>
+    <style>
+        body { font-family: sans-serif; margin: 20px; }
+        .diagram-container {
+            border: 1px solid #ccc;
+            padding: 15px;
+            margin-bottom: 30px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+        }
+        h1, h2 { color: #333; }
+    </style>
+</head>
+<body>
+
+    <h1>Diagramas de Secuencia del Sistema Smart Gap</h1>
+
+    <div class="diagram-container">
+        <h2>1. Flujo Principal de Usuario (Registro, Horario y Actividades)</h2>
+        <pre class="mermaid">
+            sequenceDiagram
+                actor Usuario
+                participant Sistema_Smart_Gap
+
+                Usuario->>Sistema_Smart_Gap: 1. Abrir Aplicación/Plataforma
+                activate Sistema_Smart_Gap
+                Sistema_Smart_Gap-->>Usuario: 2. Mostrar Pantalla de Inicio/Registro
+
+                Usuario->>Sistema_Smart_Gap: 3. Registrarse/Autenticarse(credenciales)
+                Sistema_Smart_Gap-->>Usuario: 4. Confirmar Acceso Exitoso
+                Sistema_Smart_Gap-->>Usuario: 5. Mostrar Dashboard Principal
+
+                Usuario->>Sistema_Smart_Gap: 6. Gestionar Horario(ingresar_clases)
+                Sistema_Smart_Gap-->>Usuario: 7. Generar Horario Personalizado/Identificar Huecos
+                Sistema_Smart_Gap-->>Usuario: 8. Sugerir Actividades en Huecos
+
+                Usuario->>Sistema_Smart_Gap: 9. Explorar/Crear Actividad
+                alt Usuario decide unirse a actividad
+                    Sistema_Smart_Gap-->>Usuario: 10. Mostrar Lista de Actividades
+                    Usuario->>Sistema_Smart_Gap: 11. Seleccionar Actividad(ID)
+                    Sistema_Smart_Gap-->>Usuario: 12. Unirse a Actividad
+                    Sistema_Smart_Gap-->>Usuario: 13. Confirmar Unión/Actualizar Horario
+                else Usuario decide crear actividad
+                    Sistema_Smart_Gap-->>Usuario: 10. Mostrar Formulario Creación
+                    Usuario->>Sistema_Smart_Gap: 11. Ingresar Datos Nueva Actividad
+                    Sistema_Smart_Gap-->>Usuario: 12. Crear Actividad
+                    Sistema_Smart_Gap-->>Usuario: 13. Confirmar Creación/Actualizar Horario
+                end
+                deactivate Sistema_Smart_Gap
+        </pre>
+    </div>
+
+    <div class="diagram-container">
+        <h2>2. Gestión de Suscripciones y Notificaciones (Usuario)</h2>
+        <pre class="mermaid">
+            sequenceDiagram
+                actor Usuario
+                participant Sistema_Smart_Gap
+                participant Pasarela_Pago
+
+                Usuario->>Sistema_Smart_Gap: 1. Acceder "Suscripciones"
+                activate Sistema_Smart_Gap
+                Sistema_Smart_Gap-->>Usuario: 2. Mostrar Planes de Suscripción
+
+                Usuario->>Sistema_Smart_Gap: 3. Seleccionar Plan(ID_plan)
+                Sistema_Smart_Gap-->>Usuario: 4. Mostrar Resumen de Compra
+
+                Usuario->>Sistema_Smart_Gap: 5. Confirmar Compra
+                Sistema_Smart_Gap->>Pasarela_Pago: 6. Iniciar Proceso de Pago
+                activate Pasarela_Pago
+                Pasarela_Pago-->>Usuario: 7. Solicitar Datos de Pago
+                Usuario->>Pasarela_Pago: 8. Ingresar Datos de Pago
+                Pasarela_Pago->>Sistema_Smart_Gap: 9. Notificar Resultado de Pago
+                deactivate Pasarela_Pago
+
+                alt Pago Exitoso
+                    Sistema_Smart_Gap-->>Usuario: 10. Confirmar Pago Exitoso/Suscripción Activa
+                    Sistema_Smart_Gap-->>Usuario: 11. Ampliar Límites/Almacenamiento
+                else Pago Fallido
+                    Sistema_Smart_Gap-->>Usuario: 10. Notificar Pago Fallido
+                end
+
+                Usuario->>Sistema_Smart_Gap: 12. Acceder "Configuración de Notificaciones"
+                Sistema_Smart_Gap-->>Usuario: 13. Mostrar Preferencias de Notificación
+                Usuario->>Sistema_Smart_Gap: 14. Modificar Preferencias/Frecuencia
+                Sistema_Smart_Gap-->>Usuario: 15. Confirmar Actualización de Notificaciones
+                deactivate Sistema_Smart_Gap
+        </pre>
+    </div>
+
+    <div class="diagram-container">
+        <h2>3. Gestión y Reportes de Administración</h2>
+        <pre class="mermaid">
+            sequenceDiagram
+                actor Administrador
+                participant Sistema_Smart_Gap
+
+                Administrador->>Sistema_Smart_Gap: 1. Acceder Panel de Administración
+                activate Sistema_Smart_Gap
+                Sistema_Smart_Gap-->>Administrador: 2. Mostrar Dashboard de Administración
+
+                alt Gestionar Usuarios
+                    Administrador->>Sistema_Smart_Gap: 3. Seleccionar "Gestión de Usuarios"
+                    Sistema_Smart_Gap-->>Administrador: 4. Mostrar Lista de Usuarios
+                    Administrador->>Sistema_Smart_Gap: 5. Realizar Acción en Usuario(buscar, bloquear, activar)
+                    Sistema_Smart_Gap-->>Administrador: 6. Confirmar Acción en Usuario
+                else Gestionar Actividades
+                    Administrador->>Sistema_Smart_Gap: 3. Seleccionar "Gestión de Actividades"
+                    Sistema_Smart_Gap-->>Administrador: 4. Mostrar Lista de Actividades
+                    Administrador->>Sistema_Smart_Gap: 5. Realizar Acción en Actividad(crear, editar, eliminar)
+                    Sistema_Smart_Gap-->>Administrador: 6. Confirmar Acción en Actividad
+                else Gestionar Horarios
+                    Administrador->>Sistema_Smart_Gap: 3. Seleccionar "Gestión de Horarios"
+                    Sistema_Smart_Gap-->>Administrador: 4. Mostrar Configuración de Horarios/Conflictos
+                    Administrador->>Sistema_Smart_Gap: 5. Realizar Acción en Horario(ajustar_parámetros, resolver_conflicto)
+                    Sistema_Smart_Gap-->>Administrador: 6. Confirmar Acción en Horario
+                else Solicitar Reportes
+                    Administrador->>Sistema_Smart_Gap: 3. Seleccionar "Reportes"
+                    Sistema_Smart_Gap-->>Administrador: 4. Mostrar Opciones de Reporte
+                    Administrador->>Sistema_Smart_Gap: 5. Seleccionar Tipo/Rango de Reporte
+                    Sistema_Smart_Gap-->>Administrador: 6. Generar y Mostrar Reporte
+                end
+                deactivate Sistema_Smart_Gap
+        </pre>
+    </div>
+
+</body>
+</html>
